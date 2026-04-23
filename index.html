@@ -1,0 +1,1109 @@
+<!DOCTYPE html>
+<html lang="ms" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Teach-In Express - SKPK Miri</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600;700&family=Nunito:wght@400;700;800&display=swap" rel="stylesheet">
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Nunito', 'sans-serif'],
+                        kids: ['Fredoka', 'sans-serif'], // Font mesra kanak-kanak
+                    },
+                    colors: {
+                        bm: '#eff6ff', math: '#fff7ed', diri: '#f0fdf4',
+                        emosi: '#faf5ff', visual: '#fdf2f8', isyarat: '#eef2ff',
+                        game: '#fefce8', audio: '#f0fdfa', ganjaran: '#fffbeb',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        /* Toast notification */
+        #toast-container { position: fixed; bottom: 20px; right: 20px; z-index: 50; display: flex; flex-direction: column; gap: 10px; }
+        .toast { background-color: #334155; color: white; padding: 12px 24px; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); opacity: 0; transform: translateY(20px); transition: all 0.3s ease; }
+        .toast.show { opacity: 1; transform: translateY(0); }
+        .hide-scrollbar::-webkit-scrollbar { display: none; }
+        .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
+        /* Butang 3D Bubbly Kanak-Kanak */
+        .btn-3d {
+            transition: all 0.1s;
+        }
+        .btn-3d:active {
+            transform: translateY(6px);
+            box-shadow: 0 0px 0 0 transparent !important;
+        }
+
+        /* Animasi Pop bagi Game */
+        @keyframes popIn {
+            0% { transform: scale(0.8); opacity: 0; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+        .animate-pop { animation: popIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; }
+    </style>
+</head>
+<body class="font-sans text-gray-800 bg-[#f8fafc] flex flex-col min-h-screen" id="top">
+
+    <div id="toast-container"></div>
+
+    <!-- Navigation Bar -->
+    <nav class="bg-white shadow-sm sticky top-0 z-40 border-b-4 border-blue-200">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16 items-center">
+                <div class="flex-shrink-0 flex items-center gap-3 cursor-pointer" onclick="closeGame(); window.scrollTo(0,0); playClick();">
+                    <img src="logo.png" alt="Logo SKPK Miri" class="h-12 w-12 rounded-full shadow-sm hover:scale-105 transition-transform duration-200">
+                    <span class="font-kids font-bold text-2xl text-blue-600 tracking-wide hidden sm:block">Teach-In Express</span>
+                </div>
+                <div class="flex space-x-4 md:space-x-8">
+                    <a href="#tentang" onclick="playClick()" class="font-kids text-gray-500 hover:text-blue-500 font-bold text-lg transition">Tentang</a>
+                    <a href="#kategori" onclick="playClick()" class="font-kids text-gray-500 hover:text-blue-500 font-bold text-lg transition">Kategori</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- KAWASAN MENU UTAMA (Disembunyikan semasa Game berjalan) -->
+    <div id="main-menu-area">
+        <!-- 1. Hero Section -->
+        <section class="relative bg-[url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0MCIgaGVpZ2h0PSI0MCI+CjxwYXRoIGQ9Ik0yMCAwbDIwIDIwdjIwbS00MC0yMGwyMCAyMEgwem0wIDQwbDIwLTIwaDIwbS00MC0yMGwyMC0yMEgwem00MCAwbC0yMCAyMEgweoiIGZpbGw9IiNlMGYyZmUiIGZpbGwtb3BhY2l0eT0iMC40IiBmaWxsLXJ1bGU9ImV2ZW5vZGQiLz4KPC9zdmc+')] py-12 lg:py-20 overflow-hidden bg-blue-50">
+            <div class="max-w-7xl mx-auto px-4 text-center relative z-10">
+                <h1 class="text-5xl md:text-7xl font-kids font-bold text-blue-600 mb-4 drop-shadow-md">
+                    Teach-In Express
+                </h1>
+                <h2 class="text-2xl md:text-4xl font-kids font-bold text-orange-500 mb-8 bg-white inline-block px-6 py-2 rounded-full border-4 border-orange-200 shadow-sm">
+                    "Klik Cepat, Ajar Mudah"
+                </h2>
+                <div class="flex flex-wrap justify-center gap-4 mt-4">
+                    <button onclick="document.getElementById('kategori').scrollIntoView({behavior:'smooth'}); playClick();" class="btn-3d font-kids px-8 py-4 bg-blue-500 border-4 border-blue-600 text-white text-2xl font-bold rounded-full shadow-[0_6px_0_#1e3a8a] hover:bg-blue-400">
+                        <i class="fa-solid fa-play mr-2"></i> Mula Teroka
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- 2. Bahagian Tentang Teach-In Express -->
+        <section id="tentang" class="py-12 bg-white">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="bg-blue-100 rounded-[3rem] border-8 border-blue-300 p-8 md:p-12 shadow-xl flex flex-col md:flex-row items-center gap-8 relative overflow-hidden">
+                    <!-- Hiasan Latar Belakang -->
+                    <div class="absolute -top-10 -right-10 text-blue-200 text-9xl opacity-50"><i class="fa-solid fa-train-tram"></i></div>
+                    
+                    <div class="md:w-1/3 flex justify-center relative z-10">
+                        <div class="w-40 h-40 md:w-56 md:h-56 bg-white rounded-full border-8 border-blue-400 shadow-[0_8px_0_#60a5fa] overflow-hidden flex-shrink-0">
+                            <img src="skpk.jpg" alt="SKPK Miri" class="w-full h-full object-cover">
+                        </div>
+                    </div>
+                    <div class="md:w-2/3 text-center md:text-left relative z-10">
+                        <h3 class="text-4xl font-kids font-bold text-blue-800 mb-2">Teach-In Express</h3>
+                        <h4 class="text-2xl font-kids font-bold text-orange-500 mb-6 inline-block bg-white px-4 py-1 rounded-full border-2 border-orange-200 shadow-sm">"Klik Cepat, Ajar Mudah"</h4>
+                        <p class="text-xl font-kids text-gray-700 leading-relaxed font-semibold">
+                            Satu platform interaktif yang menghimpunkan aktiviti pembelajaran ringkas, mudah dan menarik untuk kegunaan guru-guru SKPK Miri. Sesuai digunakan semasa teach in, sit in, kelas gantian dan juga dalam PdPC harian bagi membantu murid belajar dengan lebih aktif dan menyeronokkan.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 3. Bahagian Pilih Kategori Aktiviti -->
+        <section id="kategori" class="py-12 bg-white">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <h3 class="text-4xl font-kids font-bold text-center text-gray-700 mb-8">Pilih Kategori Khas</h3>
+                
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-6 justify-center">
+                    
+                    <button onclick="showCategory('bahasa-melayu')" class="btn-3d flex flex-col items-center p-6 bg-blue-50 rounded-[2rem] border-4 border-blue-400 shadow-[0_8px_0_#60a5fa] hover:bg-blue-100 w-full group">
+                        <div class="w-20 h-20 rounded-full bg-white border-4 border-blue-200 flex items-center justify-center text-blue-500 mb-4 text-4xl group-hover:scale-110 transition-transform">
+                            <i class="fa-solid fa-book"></i>
+                        </div>
+                        <span class="font-kids font-bold text-xl text-blue-800">Bahasa Melayu</span>
+                    </button>
+                    
+                    <button onclick="showCategory('matematik')" class="btn-3d flex flex-col items-center p-6 bg-orange-50 rounded-[2rem] border-4 border-orange-400 shadow-[0_8px_0_#fb923c] hover:bg-orange-100 w-full group">
+                        <div class="w-20 h-20 rounded-full bg-white border-4 border-orange-200 flex items-center justify-center text-orange-500 mb-4 text-4xl group-hover:scale-110 transition-transform">
+                            <i class="fa-solid fa-calculator"></i>
+                        </div>
+                        <span class="font-kids font-bold text-xl text-orange-800">Matematik</span>
+                    </button>
+                    
+                    <button onclick="showCategory('pengurusan-diri')" class="btn-3d flex flex-col items-center p-6 bg-green-50 rounded-[2rem] border-4 border-green-400 shadow-[0_8px_0_#4ade80] hover:bg-green-100 w-full group">
+                        <div class="w-20 h-20 rounded-full bg-white border-4 border-green-200 flex items-center justify-center text-green-500 mb-4 text-4xl group-hover:scale-110 transition-transform">
+                            <i class="fa-solid fa-hands-bubbles"></i>
+                        </div>
+                        <span class="font-kids font-bold text-xl text-green-800">Urus Diri</span>
+                    </button>
+                    
+                    <button onclick="showCategory('sosial-emosi')" class="btn-3d flex flex-col items-center p-6 bg-purple-50 rounded-[2rem] border-4 border-purple-400 shadow-[0_8px_0_#c084fc] hover:bg-purple-100 w-full group">
+                        <div class="w-20 h-20 rounded-full bg-white border-4 border-purple-200 flex items-center justify-center text-purple-500 mb-4 text-4xl group-hover:scale-110 transition-transform">
+                            <i class="fa-solid fa-face-smile-heart"></i>
+                        </div>
+                        <span class="font-kids font-bold text-xl text-purple-800">Sosial & Emosi</span>
+                    </button>
+                    
+                    <button onclick="showCategory('sensori-visual')" class="btn-3d flex flex-col items-center p-6 bg-pink-50 rounded-[2rem] border-4 border-pink-400 shadow-[0_8px_0_#f472b6] hover:bg-pink-100 w-full group">
+                        <div class="w-20 h-20 rounded-full bg-white border-4 border-pink-200 flex items-center justify-center text-pink-500 mb-4 text-4xl group-hover:scale-110 transition-transform">
+                            <i class="fa-solid fa-eye"></i>
+                        </div>
+                        <span class="font-kids font-bold text-xl text-pink-800">Sensori Visual</span>
+                    </button>
+
+                    <button onclick="showCategory('bahasa-isyarat')" class="btn-3d flex flex-col items-center p-6 bg-indigo-50 rounded-[2rem] border-4 border-indigo-400 shadow-[0_8px_0_#818cf8] hover:bg-indigo-100 w-full group">
+                        <div class="w-20 h-20 rounded-full bg-white border-4 border-indigo-200 flex items-center justify-center text-indigo-500 mb-4 text-4xl group-hover:scale-110 transition-transform">
+                            <i class="fa-solid fa-hands"></i>
+                        </div>
+                        <span class="font-kids font-bold text-xl text-indigo-800">Bahasa Isyarat</span>
+                    </button>
+                    
+                    <button onclick="showCategory('game-cepat')" class="btn-3d flex flex-col items-center p-6 bg-yellow-50 rounded-[2rem] border-4 border-yellow-400 shadow-[0_8px_0_#facc15] hover:bg-yellow-100 w-full group">
+                        <div class="w-20 h-20 rounded-full bg-white border-4 border-yellow-200 flex items-center justify-center text-yellow-500 mb-4 text-4xl group-hover:scale-110 transition-transform">
+                            <i class="fa-solid fa-stopwatch"></i>
+                        </div>
+                        <span class="font-kids font-bold text-xl text-yellow-800">Game 5 Minit</span>
+                    </button>
+                    
+                    <button onclick="showCategory('ganjaran')" class="btn-3d flex flex-col items-center p-6 bg-amber-50 rounded-[2rem] border-4 border-amber-400 shadow-[0_8px_0_#fbbf24] hover:bg-amber-100 w-full group">
+                        <div class="w-20 h-20 rounded-full bg-white border-4 border-amber-200 flex items-center justify-center text-amber-500 mb-4 text-4xl group-hover:scale-110 transition-transform">
+                            <i class="fa-solid fa-award"></i>
+                        </div>
+                        <span class="font-kids font-bold text-xl text-amber-800">Ganjaran Digital</span>
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- KAWASAN PAPARAN MENU AKTIVITI -->
+        <div id="activity-display-area" class="pb-16 bg-white">
+            
+            <script>
+                // Map warna global dikongsi oleh semua kategori
+                const colorMap = {
+                    'blue': {bg: 'bg-blue-50', border: 'border-blue-400', shadow: 'shadow-[0_6px_0_#60a5fa]', text: 'text-blue-600', hover: 'hover:bg-blue-100'},
+                    'red': {bg: 'bg-red-50', border: 'border-red-400', shadow: 'shadow-[0_6px_0_#f87171]', text: 'text-red-600', hover: 'hover:bg-red-100'},
+                    'green': {bg: 'bg-green-50', border: 'border-green-400', shadow: 'shadow-[0_6px_0_#4ade80]', text: 'text-green-600', hover: 'hover:bg-green-100'},
+                    'orange': {bg: 'bg-orange-50', border: 'border-orange-400', shadow: 'shadow-[0_6px_0_#fb923c]', text: 'text-orange-600', hover: 'hover:bg-orange-100'},
+                    'purple': {bg: 'bg-purple-50', border: 'border-purple-400', shadow: 'shadow-[0_6px_0_#c084fc]', text: 'text-purple-600', hover: 'hover:bg-purple-100'},
+                    'pink': {bg: 'bg-pink-50', border: 'border-pink-400', shadow: 'shadow-[0_6px_0_#f472b6]', text: 'text-pink-600', hover: 'hover:bg-pink-100'},
+                    'teal': {bg: 'bg-teal-50', border: 'border-teal-400', shadow: 'shadow-[0_6px_0_#2dd4bf]', text: 'text-teal-600', hover: 'hover:bg-teal-100'},
+                    'indigo': {bg: 'bg-indigo-50', border: 'border-indigo-400', shadow: 'shadow-[0_6px_0_#818cf8]', text: 'text-indigo-600', hover: 'hover:bg-indigo-100'},
+                    'yellow': {bg: 'bg-yellow-50', border: 'border-yellow-400', shadow: 'shadow-[0_6px_0_#facc15]', text: 'text-yellow-600', hover: 'hover:bg-yellow-100'}
+                };
+            </script>
+
+            <!-- Bahasa Melayu -->
+            <section id="bahasa-melayu" class="activity-section hidden py-12 px-4 max-w-7xl mx-auto animate-pop">
+                <div class="bg-blue-100 border-4 border-blue-400 rounded-[2rem] p-6 sm:p-10 relative">
+                    <button onclick="hideAllCategories()" class="btn-3d absolute -top-5 -right-2 bg-red-500 border-4 border-white text-white rounded-full w-12 h-12 flex items-center justify-center text-xl font-bold shadow-md"><i class="fa-solid fa-xmark"></i></button>
+                    
+                    <h3 class="text-4xl font-kids font-bold text-blue-800 mb-8 text-center flex justify-center items-center gap-3">
+                        <div class="bg-blue-500 text-white w-12 h-12 rounded-full flex items-center justify-center"><i class="fa-solid fa-book"></i></div>
+                        Aktiviti Bahasa Melayu
+                    </h3>
+                    
+                    <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6">
+                        <script>
+                            const bmMenu = [
+                                {id: 1, title: "Padan Gambar", icon: "fa-images", color: "blue"},
+                                {id: 2, title: "Cari Huruf", icon: "fa-magnifying-glass", color: "red"},
+                                {id: 3, title: "Besar vs Kecil", icon: "fa-font", color: "green"},
+                                {id: 4, title: "Susun Huruf", icon: "fa-arrow-down-a-z", color: "orange"},
+                                {id: 5, title: "Teka Gambar", icon: "fa-circle-question", color: "purple"},
+                                {id: 6, title: "Suku Kata", icon: "fa-cubes", color: "pink"},
+                                {id: 7, title: "Pilih Ayat", icon: "fa-check-double", color: "teal"},
+                                {id: 8, title: "Baca & Klik", icon: "fa-hand-pointer", color: "indigo"},
+                                {id: 9, title: "Gambar Sama", icon: "fa-clone", color: "blue"},
+                                {id: 10, title: "Huruf Awal", icon: "fa-a", color: "red"},
+                                {id: 11, title: "Kenal Haiwan", icon: "fa-paw", color: "green"},
+                                {id: 12, title: "Bentuk Asas", icon: "fa-shapes", color: "orange"}
+                            ];
+
+                            bmMenu.forEach(act => {
+                                const c = colorMap[act.color];
+                                document.write(`
+                                    <button onclick="startGame('bm', ${act.id}, '${act.title}')" class="btn-3d flex flex-col items-center justify-between p-4 sm:p-6 rounded-[2rem] border-4 ${c.bg} ${c.border} ${c.shadow} ${c.hover} group">
+                                        <div class="w-16 h-16 bg-white border-4 ${c.border} rounded-full flex items-center justify-center text-3xl ${c.text} mb-3 group-hover:scale-110 transition-transform">
+                                            <i class="fa-solid ${act.icon}"></i>
+                                        </div>
+                                        <h4 class="font-kids font-bold text-gray-800 text-lg text-center w-full leading-tight mb-3">${act.title}</h4>
+                                        <div class="w-full py-1 bg-white rounded-full font-bold text-sm border-2 ${c.border} ${c.text}">Buka</div>
+                                    </button>
+                                `);
+                            });
+                        </script>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Matematik -->
+            <section id="matematik" class="activity-section hidden py-12 px-4 max-w-7xl mx-auto animate-pop">
+                <div class="bg-orange-100 border-4 border-orange-400 rounded-[2rem] p-6 sm:p-10 relative">
+                    <button onclick="hideAllCategories()" class="btn-3d absolute -top-5 -right-2 bg-red-500 border-4 border-white text-white rounded-full w-12 h-12 flex items-center justify-center text-xl font-bold shadow-md"><i class="fa-solid fa-xmark"></i></button>
+                    
+                    <h3 class="text-4xl font-kids font-bold text-orange-800 mb-8 text-center flex justify-center items-center gap-3">
+                        <div class="bg-orange-500 text-white w-12 h-12 rounded-full flex items-center justify-center"><i class="fa-solid fa-calculator"></i></div>
+                        Aktiviti Matematik
+                    </h3>
+                    
+                    <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6">
+                        <script>
+                            const mathMenu = [
+                                {id: 1, title: "Padan Nombor", icon: "fa-1", color: "blue"},
+                                {id: 2, title: "Kenal Nombor", icon: "fa-dice-one", color: "red"},
+                                {id: 3, title: "Banyak / Sikit", icon: "fa-scale-unbalanced", color: "green"},
+                                {id: 4, title: "Kira Objek 1-5", icon: "fa-star", color: "orange"},
+                                {id: 5, title: "Kenal 6-10", icon: "fa-dice", color: "purple"},
+                                {id: 6, title: "Kira Objek 6-10", icon: "fa-circle", color: "pink"},
+                                {id: 7, title: "Susun Nombor", icon: "fa-arrow-up-1-9", color: "teal"},
+                                {id: 8, title: "Sebelum/Selepas", icon: "fa-arrows-left-right", color: "indigo"},
+                                {id: 9, title: "Tambah Mudah", icon: "fa-plus", color: "blue"},
+                                {id: 10, title: "Tolak Mudah", icon: "fa-minus", color: "red"},
+                                {id: 11, title: "Duit Syiling", icon: "fa-coins", color: "green"},
+                                {id: 12, title: "Baca Masa", icon: "fa-clock", color: "orange"},
+                                {id: 13, title: "Tambah 20", icon: "fa-plus-minus", color: "purple"},
+                                {id: 14, title: "Tolak 20", icon: "fa-calculator", color: "pink"},
+                                {id: 15, title: "Duit Kertas", icon: "fa-money-bill-wave", color: "teal"},
+                                {id: 16, title: "Selesai Masalah", icon: "fa-brain", color: "indigo"}
+                            ];
+
+                            mathMenu.forEach(act => {
+                                const c = colorMap[act.color];
+                                document.write(`
+                                    <button onclick="startGame('math', ${act.id}, '${act.title}')" class="btn-3d flex flex-col items-center justify-between p-4 sm:p-6 rounded-[2rem] border-4 ${c.bg} ${c.border} ${c.shadow} ${c.hover} group">
+                                        <div class="w-16 h-16 bg-white border-4 ${c.border} rounded-full flex items-center justify-center text-3xl ${c.text} mb-3 group-hover:scale-110 transition-transform">
+                                            <i class="fa-solid ${act.icon}"></i>
+                                        </div>
+                                        <h4 class="font-kids font-bold text-gray-800 text-base sm:text-lg text-center w-full leading-tight mb-3">${act.title}</h4>
+                                        <div class="w-full py-1 bg-white rounded-full font-bold text-sm border-2 ${c.border} ${c.text}">Buka</div>
+                                    </button>
+                                `);
+                            });
+                        </script>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Pengurusan Diri -->
+            <section id="pengurusan-diri" class="activity-section hidden py-12 px-4 max-w-7xl mx-auto animate-pop">
+                <div class="bg-green-100 border-4 border-green-400 rounded-[2rem] p-6 sm:p-10 relative">
+                    <button onclick="hideAllCategories()" class="btn-3d absolute -top-5 -right-2 bg-red-500 border-4 border-white text-white rounded-full w-12 h-12 flex items-center justify-center text-xl font-bold shadow-md"><i class="fa-solid fa-xmark"></i></button>
+                    
+                    <h3 class="text-4xl font-kids font-bold text-green-800 mb-8 text-center flex justify-center items-center gap-3">
+                        <div class="bg-green-500 text-white w-12 h-12 rounded-full flex items-center justify-center"><i class="fa-solid fa-hands-bubbles"></i></div>
+                        Aktiviti Pengurusan Diri
+                    </h3>
+                    
+                    <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6">
+                        <script>
+                            const diriMenu = [
+                                {id: 1, title: "Anggota Badan", icon: "fa-ear-listen", color: "blue"},
+                                {id: 2, title: "Alatan Mandi", icon: "fa-bath", color: "teal"},
+                                {id: 3, title: "Pakaian Saya", icon: "fa-shirt", color: "pink"},
+                                {id: 4, title: "Siang & Malam", icon: "fa-sun", color: "orange"},
+                                {id: 5, title: "Susun Gosok Gigi", icon: "fa-tooth", color: "green"},
+                                {id: 6, title: "Makanan Sihat", icon: "fa-apple-whole", color: "red"},
+                                {id: 7, title: "Alatan Makan", icon: "fa-utensils", color: "purple"},
+                                {id: 8, title: "Tandas Kita", icon: "fa-restroom", color: "blue"},
+                                {id: 9, title: "Alatan Bahaya", icon: "fa-triangle-exclamation", color: "red"},
+                                {id: 10, title: "Susun Mandi", icon: "fa-shower", color: "teal"},
+                                {id: 11, title: "Adab Makan", icon: "fa-hands-praying", color: "green"},
+                                {id: 12, title: "Ruang Rumah", icon: "fa-house", color: "orange"},
+                                {id: 13, title: "Fungsi Wang", icon: "fa-money-bill", color: "blue"},
+                                {id: 14, title: "Pilih Pakaian", icon: "fa-child-reaching", color: "pink"},
+                                {id: 15, title: "Simbol Amaran", icon: "fa-sign-hanging", color: "purple"},
+                                {id: 16, title: "Kecemasan", icon: "fa-phone-volume", color: "red"}
+                            ];
+
+                            diriMenu.forEach(act => {
+                                const c = colorMap[act.color];
+                                document.write(`
+                                    <button onclick="startGame('diri', ${act.id}, '${act.title}')" class="btn-3d flex flex-col items-center justify-between p-4 sm:p-6 rounded-[2rem] border-4 ${c.bg} ${c.border} ${c.shadow} ${c.hover} group">
+                                        <div class="w-16 h-16 bg-white border-4 ${c.border} rounded-full flex items-center justify-center text-3xl ${c.text} mb-3 group-hover:scale-110 transition-transform">
+                                            <i class="fa-solid ${act.icon}"></i>
+                                        </div>
+                                        <h4 class="font-kids font-bold text-gray-800 text-base sm:text-lg text-center w-full leading-tight mb-3">${act.title}</h4>
+                                        <div class="w-full py-1 bg-white rounded-full font-bold text-sm border-2 ${c.border} ${c.text}">Buka</div>
+                                    </button>
+                                `);
+                            });
+                        </script>
+                    </div>
+                </div>
+            </section>
+            
+            <!-- Sosial dan Emosi -->
+            <section id="sosial-emosi" class="activity-section hidden py-12 px-4 max-w-7xl mx-auto animate-pop">
+                <div class="bg-purple-100 border-4 border-purple-400 rounded-[2rem] p-6 sm:p-10 relative">
+                    <button onclick="hideAllCategories()" class="btn-3d absolute -top-5 -right-2 bg-red-500 border-4 border-white text-white rounded-full w-12 h-12 flex items-center justify-center text-xl font-bold shadow-md"><i class="fa-solid fa-xmark"></i></button>
+                    
+                    <h3 class="text-4xl font-kids font-bold text-purple-800 mb-8 text-center flex justify-center items-center gap-3">
+                        <div class="bg-purple-500 text-white w-12 h-12 rounded-full flex items-center justify-center"><i class="fa-solid fa-face-smile-heart"></i></div>
+                        Aktiviti Sosial & Emosi
+                    </h3>
+                    
+                    <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6">
+                        <script>
+                            const emosiMenu = [
+                                {id: 1, title: "Emosi Gembira", icon: "fa-face-smile", color: "blue"},
+                                {id: 2, title: "Emosi Sedih", icon: "fa-face-frown", color: "teal"},
+                                {id: 3, title: "Emosi Marah", icon: "fa-face-angry", color: "red"},
+                                {id: 4, title: "Emosi Takut", icon: "fa-face-flushed", color: "purple"},
+                                {id: 5, title: "Kenal Reaksi", icon: "fa-face-grin-stars", color: "pink"},
+                                {id: 6, title: "Emosi Diri Saya", icon: "fa-child", color: "orange"},
+                                {id: 7, title: "Susun Muka", icon: "fa-masks-theater", color: "green"},
+                                {id: 8, title: "Tingkah Laku Baik", icon: "fa-thumbs-up", color: "blue"},
+                                {id: 9, title: "Tingkah Laku Buruk", icon: "fa-thumbs-down", color: "red"},
+                                {id: 10, title: "Mari Berkawan", icon: "fa-users", color: "pink"},
+                                {id: 11, title: "Terima Kasih", icon: "fa-handshake-angle", color: "orange"},
+                                {id: 12, title: "Ucap Maaf", icon: "fa-hands-praying", color: "purple"},
+                                {id: 13, title: "Sifat Menolong", icon: "fa-heart", color: "teal"},
+                                {id: 14, title: "Kawal Marah", icon: "fa-person-praying", color: "green"},
+                                {id: 15, title: "Susun Ayat Maaf", icon: "fa-comment-dots", color: "indigo"},
+                                {id: 16, title: "Selesai Masalah", icon: "fa-lightbulb", color: "indigo"}
+                            ];
+
+                            emosiMenu.forEach(act => {
+                                const c = colorMap[act.color];
+                                document.write(`
+                                    <button onclick="startGame('emosi', ${act.id}, '${act.title}')" class="btn-3d flex flex-col items-center justify-between p-4 sm:p-6 rounded-[2rem] border-4 ${c.bg} ${c.border} ${c.shadow} ${c.hover} group">
+                                        <div class="w-16 h-16 bg-white border-4 ${c.border} rounded-full flex items-center justify-center text-3xl ${c.text} mb-3 group-hover:scale-110 transition-transform">
+                                            <i class="fa-solid ${act.icon}"></i>
+                                        </div>
+                                        <h4 class="font-kids font-bold text-gray-800 text-base sm:text-lg text-center w-full leading-tight mb-3">${act.title}</h4>
+                                        <div class="w-full py-1 bg-white rounded-full font-bold text-sm border-2 ${c.border} ${c.text}">Buka</div>
+                                    </button>
+                                `);
+                            });
+                        </script>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Sensori Visual -->
+            <section id="sensori-visual" class="activity-section hidden py-12 px-4 max-w-7xl mx-auto animate-pop">
+                <div class="bg-pink-100 border-4 border-pink-400 rounded-[2rem] p-6 sm:p-10 relative">
+                    <button onclick="hideAllCategories()" class="btn-3d absolute -top-5 -right-2 bg-red-500 border-4 border-white text-white rounded-full w-12 h-12 flex items-center justify-center text-xl font-bold shadow-md"><i class="fa-solid fa-xmark"></i></button>
+                    
+                    <h3 class="text-4xl font-kids font-bold text-pink-800 mb-8 text-center flex justify-center items-center gap-3">
+                        <div class="bg-pink-500 text-white w-12 h-12 rounded-full flex items-center justify-center"><i class="fa-solid fa-eye"></i></div>
+                        Aktiviti Sensori Visual
+                    </h3>
+                    
+                    <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6">
+                        <script>
+                            const visualMenu = [
+                                {id: 1, title: "Warna Asas", icon: "fa-palette", color: "blue"},
+                                {id: 2, title: "Bentuk Asas", icon: "fa-draw-polygon", color: "red"},
+                                {id: 3, title: "Cari Sama", icon: "fa-clone", color: "green"},
+                                {id: 4, title: "Paling Besar", icon: "fa-expand", color: "orange"},
+                                {id: 5, title: "Paling Kecil", icon: "fa-compress", color: "purple"},
+                                {id: 6, title: "Cari Beza", icon: "fa-not-equal", color: "pink"},
+                                {id: 7, title: "Cari Gelap", icon: "fa-moon", color: "teal"},
+                                {id: 8, title: "Cari Pasangan", icon: "fa-socks", color: "indigo"},
+                                {id: 9, title: "Atas & Bawah", icon: "fa-arrows-up-down", color: "blue"},
+                                {id: 10, title: "Kiri & Kanan", icon: "fa-arrows-left-right", color: "red"},
+                                {id: 11, title: "Cantum Separuh", icon: "fa-puzzle-piece", color: "green"},
+                                {id: 12, title: "Susun Saiz", icon: "fa-signal", color: "orange"},
+                                {id: 13, title: "Corak Berulang", icon: "fa-repeat", color: "purple"},
+                                {id: 14, title: "Cari Tersembunyi", icon: "fa-magnifying-glass-plus", color: "pink"},
+                                {id: 15, title: "Susun Corak", icon: "fa-shapes", color: "teal"},
+                                {id: 16, title: "Turutan Masa", icon: "fa-hourglass-half", color: "indigo"}
+                            ];
+
+                            visualMenu.forEach(act => {
+                                const c = colorMap[act.color];
+                                document.write(`
+                                    <button onclick="startGame('visual', ${act.id}, '${act.title}')" class="btn-3d flex flex-col items-center justify-between p-4 sm:p-6 rounded-[2rem] border-4 ${c.bg} ${c.border} ${c.shadow} ${c.hover} group">
+                                        <div class="w-16 h-16 bg-white border-4 ${c.border} rounded-full flex items-center justify-center text-3xl ${c.text} mb-3 group-hover:scale-110 transition-transform">
+                                            <i class="fa-solid ${act.icon}"></i>
+                                        </div>
+                                        <h4 class="font-kids font-bold text-gray-800 text-base sm:text-lg text-center w-full leading-tight mb-3">${act.title}</h4>
+                                        <div class="w-full py-1 bg-white rounded-full font-bold text-sm border-2 ${c.border} ${c.text}">Buka</div>
+                                    </button>
+                                `);
+                            });
+                        </script>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Game Cepat 5 Minit (BAHARU) -->
+            <section id="game-cepat" class="activity-section hidden py-12 px-4 max-w-7xl mx-auto animate-pop">
+                <div class="bg-yellow-100 border-4 border-yellow-400 rounded-[2rem] p-6 sm:p-10 relative">
+                    <button onclick="hideAllCategories()" class="btn-3d absolute -top-5 -right-2 bg-red-500 border-4 border-white text-white rounded-full w-12 h-12 flex items-center justify-center text-xl font-bold shadow-md"><i class="fa-solid fa-xmark"></i></button>
+                    
+                    <h3 class="text-4xl font-kids font-bold text-yellow-800 mb-8 text-center flex justify-center items-center gap-3">
+                        <div class="bg-yellow-500 text-white w-12 h-12 rounded-full flex items-center justify-center"><i class="fa-solid fa-stopwatch"></i></div>
+                        Game Cepat 5 Minit
+                    </h3>
+                    
+                    <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6">
+                        <script>
+                            // 16 Aktiviti Game Cepat 5 Minit
+                            const gameCepatMenu = [
+                                // Low Function (Reaksi Pantas)
+                                {id: 1, title: "Pop Belon", icon: "fa-map-pin", color: "red"},
+                                {id: 2, title: "Tangkap Haiwan", icon: "fa-cat", color: "blue"},
+                                {id: 3, title: "Teka Bayang", icon: "fa-user-secret", color: "green"},
+                                {id: 4, title: "Teka Bunyi", icon: "fa-volume-high", color: "orange"},
+                                // Medium Low (Ingatan & Pemerhatian)
+                                {id: 5, title: "Cari Ganjil", icon: "fa-eye", color: "purple"},
+                                {id: 6, title: "Ingat Warna", icon: "fa-brain", color: "pink"},
+                                {id: 7, title: "Ibu & Anak", icon: "fa-egg", color: "teal"},
+                                {id: 8, title: "Kira Laju", icon: "fa-bolt", color: "yellow"},
+                                // Medium High (Logik & Susunan Pantas)
+                                {id: 9, title: "Susun 1-2-3", icon: "fa-list-ol", color: "blue"},
+                                {id: 10, title: "Susun A-B-C", icon: "fa-font", color: "red"},
+                                {id: 11, title: "Barang Hilang", icon: "fa-suitcase", color: "green"},
+                                {id: 12, title: "Muka Laju", icon: "fa-masks-theater", color: "orange"},
+                                // High Function (Puzzle Pantas)
+                                {id: 13, title: "Mata Helang", icon: "fa-magnifying-glass", color: "purple"},
+                                {id: 14, title: "Sambung Corak", icon: "fa-puzzle-piece", color: "pink"},
+                                {id: 15, title: "Kata Lawan", icon: "fa-arrows-left-right", color: "teal"},
+                                {id: 16, title: "Susun Kata", icon: "fa-keyboard", color: "indigo"}
+                            ];
+
+                            gameCepatMenu.forEach(act => {
+                                const c = colorMap[act.color];
+                                document.write(`
+                                    <button onclick="startGame('gamecepat', ${act.id}, '${act.title}')" class="btn-3d flex flex-col items-center justify-between p-4 sm:p-6 rounded-[2rem] border-4 ${c.bg} ${c.border} ${c.shadow} ${c.hover} group">
+                                        <div class="w-16 h-16 bg-white border-4 ${c.border} rounded-full flex items-center justify-center text-3xl ${c.text} mb-3 group-hover:scale-110 transition-transform">
+                                            <i class="fa-solid ${act.icon}"></i>
+                                        </div>
+                                        <h4 class="font-kids font-bold text-gray-800 text-base sm:text-lg text-center w-full leading-tight mb-3">${act.title}</h4>
+                                        <div class="w-full py-1 bg-white rounded-full font-bold text-sm border-2 ${c.border} ${c.text}">Main</div>
+                                    </button>
+                                `);
+                            });
+                        </script>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Ganjaran (Sistem Berfungsi) -->
+            <section id="ganjaran" class="activity-section hidden py-12 px-4 max-w-6xl mx-auto animate-pop">
+                <div class="bg-amber-100 border-4 border-amber-400 rounded-[2rem] p-6 sm:p-10 relative">
+                    <button onclick="hideAllCategories()" class="btn-3d absolute -top-5 -right-2 bg-red-500 border-4 border-white text-white rounded-full w-12 h-12 flex items-center justify-center text-xl font-bold shadow-md"><i class="fa-solid fa-xmark"></i></button>
+                    <h3 class="text-4xl font-kids font-bold text-amber-800 mb-2 text-center flex justify-center items-center gap-3">
+                        <div class="bg-amber-500 text-white w-12 h-12 rounded-full flex items-center justify-center"><i class="fa-solid fa-award"></i></div> Ganjaran Digital
+                    </h3>
+                    <p class="text-center text-amber-700 mb-8 font-semibold">Klik kad untuk tunjukkan pujian besar di skrin kelas!</p>
+                    <div class="grid grid-cols-2 md:grid-cols-5 gap-4">
+                        <script>
+                            const rewards = [
+                                {t: "Bintang Hebat", i: "fa-star", c: "amber"}, {t: "Tepukan Super", i: "fa-hands-clapping", c: "orange"},
+                                {t: "Senyuman", i: "fa-face-laugh-beam", c: "green"}, {t: "Lencana Bijak", i: "fa-medal", c: "blue"},
+                                {t: "Terbaik!", i: "fa-thumbs-up", c: "pink"}
+                            ];
+                            rewards.forEach(r => {
+                                document.write(`
+                                    <button onclick="launchReward('${r.t}', '${r.i}', 'text-${r.c}-500')" class="btn-3d bg-white rounded-3xl p-6 border-4 border-${r.c}-300 shadow-[0_6px_0_currentColor] text-${r.c}-400 hover:bg-${r.c}-50 flex flex-col items-center">
+                                        <i class="fa-solid ${r.i} text-5xl mb-3"></i>
+                                        <span class="font-kids font-bold text-gray-700 leading-tight text-center">${r.t}</span>
+                                    </button>
+                                `);
+                            });
+                        </script>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </div> <!-- END MAIN MENU AREA -->
+
+    <!-- ========================================== -->
+    <!-- KAWASAN PERMAINAN INTERAKTIF (GAME ENGINE) -->
+    <!-- ========================================== -->
+    <div id="game-area" class="hidden flex-col min-h-screen bg-blue-50 relative">
+        
+        <!-- Game Header -->
+        <div class="bg-white border-b-4 border-blue-200 p-4 flex justify-between items-center shadow-sm sticky top-0 z-10">
+            <button onclick="closeGame()" class="btn-3d bg-red-500 text-white font-kids font-bold px-6 py-2 rounded-full border-4 border-red-600 shadow-[0_4px_0_#991b1b] hover:bg-red-400">
+                <i class="fa-solid fa-arrow-left mr-2"></i> Kembali
+            </button>
+            <h2 id="game-title" class="font-kids font-bold text-2xl md:text-3xl text-blue-700 bg-blue-100 px-6 py-2 rounded-full border-2 border-blue-300">Tajuk Permainan</h2>
+            <div class="w-16"></div> <!-- Spacer -->
+        </div>
+
+        <!-- Game Content Container -->
+        <div class="flex-grow flex flex-col items-center justify-center p-6 w-full max-w-4xl mx-auto animate-pop">
+            
+            <!-- Soalan / Item Utama -->
+            <div id="game-question-area" class="bg-white p-8 rounded-[3rem] border-8 border-yellow-300 shadow-xl w-full text-center mb-8 flex items-center justify-center min-h-[200px]">
+                <!-- Kandungan dijana oleh JS -->
+            </div>
+
+            <!-- Pilihan Jawapan -->
+            <div id="game-options-area" class="grid grid-cols-1 md:grid-cols-3 gap-6 w-full">
+                <!-- Kandungan dijana oleh JS -->
+            </div>
+            
+            <!-- Custom untuk Susun Huruf / Nombor / Perkataan -->
+            <div id="game-arrange-area" class="hidden flex-col items-center w-full">
+                <div id="arrange-slots" class="flex gap-2 mb-8 flex-wrap justify-center"></div>
+                <div id="arrange-letters" class="flex gap-4 flex-wrap justify-center"></div>
+            </div>
+
+            <!-- Custom untuk Aktiviti Pakaian (Dress Up) -->
+            <div id="game-dressup-area" class="hidden flex-col items-center w-full">
+                <!-- Dijana oleh JS -->
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- Ganjaran Modal -->
+    <div id="reward-modal" class="fixed inset-0 bg-black bg-opacity-60 z-50 hidden flex items-center justify-center backdrop-blur-sm">
+        <div class="bg-white p-12 rounded-[3rem] border-8 border-yellow-400 text-center transform scale-90 transition-transform duration-300 shadow-2xl relative" id="reward-content">
+            <i id="reward-icon-display" class="fa-solid fa-star text-9xl mb-4 drop-shadow-lg animate-bounce"></i>
+            <h2 id="reward-title-display" class="font-kids text-5xl font-extrabold text-gray-800 mb-2">Hebat!</h2>
+            <p class="text-2xl font-bold text-gray-500 font-kids">Tahniah, jawapan betul!</p>
+        </div>
+    </div>
+
+    <!-- Pembinaan (Construction) Modal -->
+    <div id="construction-modal" class="fixed inset-0 bg-black bg-opacity-60 z-50 hidden flex items-center justify-center backdrop-blur-sm">
+        <div class="bg-white p-8 md:p-12 rounded-[3rem] border-8 border-blue-400 text-center transform scale-90 transition-transform duration-300 shadow-2xl relative max-w-sm md:max-w-md" id="construction-content">
+            <button onclick="closeConstructionModal()" class="absolute top-4 right-4 bg-gray-200 text-gray-500 hover:bg-red-500 hover:text-white rounded-full w-10 h-10 flex items-center justify-center text-xl font-bold transition-colors"><i class="fa-solid fa-xmark"></i></button>
+            <i class="fa-solid fa-person-digging text-7xl md:text-8xl text-orange-400 mb-6 drop-shadow-md"></i>
+            <h2 class="font-kids text-3xl md:text-4xl font-extrabold text-blue-800 mb-4">Harap Maaf!</h2>
+            <p class="text-xl font-bold text-gray-600 font-kids mb-8">Bahagian ini sedang dalam pembinaan dan akan datang tidak lama lagi.</p>
+            <button onclick="closeConstructionModal()" class="btn-3d bg-blue-500 text-white font-kids font-bold px-8 py-3 rounded-full border-4 border-blue-600 shadow-[0_4px_0_#1e3a8a] hover:bg-blue-400 w-full text-xl">Faham</button>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer id="main-footer" class="bg-white border-t-4 border-gray-200 py-8 mt-auto text-center font-kids text-gray-500 font-bold">
+        <p>&copy; <span id="year"></span> Teach-In Express SKPK Miri.</p>
+    </footer>
+
+    <!-- INTERACTIVE SCRIPTS & GAME ENGINE -->
+    <script>
+        document.getElementById('year').textContent = new Date().getFullYear();
+
+        // --- Audio Engine ---
+        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        function playTone(freq, type, duration, vol=0.1) {
+            if(audioCtx.state === 'suspended') audioCtx.resume();
+            const osc = audioCtx.createOscillator();
+            const gain = audioCtx.createGain();
+            osc.type = type; osc.frequency.value = freq;
+            gain.gain.setValueAtTime(vol, audioCtx.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + duration);
+            osc.connect(gain); gain.connect(audioCtx.destination);
+            osc.start(); osc.stop(audioCtx.currentTime + duration);
+        }
+        function playClick() { playTone(600, 'sine', 0.1, 0.05); }
+        function playSuccess() {
+            playTone(523.25, 'sine', 0.1, 0.1); 
+            setTimeout(() => playTone(659.25, 'sine', 0.1, 0.1), 100); 
+            setTimeout(() => playTone(783.99, 'sine', 0.3, 0.1), 200); 
+        }
+        function playError() {
+            playTone(200, 'sawtooth', 0.3, 0.1);
+        }
+
+        // --- UI Navigation ---
+        function showCategory(id) {
+            playClick();
+            
+            // Jika kategori belum dibina, tunjukkan pop up Pembinaan
+            if (id === 'bahasa-isyarat' || id === 'audio-visual') {
+                showConstructionModal();
+                return;
+            }
+
+            document.querySelectorAll('.activity-section').forEach(el => el.classList.add('hidden'));
+            const sec = document.getElementById(id);
+            if(sec) {
+                sec.classList.remove('hidden');
+                setTimeout(() => sec.scrollIntoView({behavior: 'smooth', block: 'center'}), 100);
+            } else {
+                showConstructionModal();
+            }
+        }
+        function hideAllCategories() {
+            playClick();
+            document.querySelectorAll('.activity-section').forEach(el => el.classList.add('hidden'));
+            document.getElementById('kategori').scrollIntoView({behavior: 'smooth'});
+        }
+
+        function showToast(msg) {
+            const container = document.getElementById('toast-container');
+            const toast = document.createElement('div');
+            toast.className = 'toast font-bold font-kids text-lg';
+            toast.innerHTML = `<i class="fa-solid fa-info-circle mr-2 text-blue-300"></i> ${msg}`;
+            container.appendChild(toast);
+            setTimeout(() => toast.classList.add('show'), 10);
+            setTimeout(() => { toast.classList.remove('show'); setTimeout(() => toast.remove(), 300); }, 3000);
+        }
+
+        // --- Sistem Ganjaran UI ---
+        function launchReward(title, iconClass, colorClass) {
+            playSuccess();
+            const modal = document.getElementById('reward-modal');
+            const content = document.getElementById('reward-content');
+            document.getElementById('reward-icon-display').className = `fa-solid ${iconClass} text-9xl mb-4 drop-shadow-lg animate-bounce ${colorClass}`;
+            document.getElementById('reward-title-display').textContent = title;
+            modal.classList.remove('hidden');
+            setTimeout(() => content.classList.replace('scale-90', 'scale-100'), 10);
+            setTimeout(() => {
+                content.classList.replace('scale-100', 'scale-90');
+                setTimeout(() => modal.classList.add('hidden'), 300);
+            }, 2500);
+        }
+
+        // --- Sistem Construction Modal ---
+        function showConstructionModal() {
+            const modal = document.getElementById('construction-modal');
+            const content = document.getElementById('construction-content');
+            modal.classList.remove('hidden');
+            setTimeout(() => content.classList.replace('scale-90', 'scale-100'), 10);
+        }
+
+        function closeConstructionModal() {
+            playClick();
+            const modal = document.getElementById('construction-modal');
+            const content = document.getElementById('construction-content');
+            content.classList.replace('scale-100', 'scale-90');
+            setTimeout(() => modal.classList.add('hidden'), 300);
+        }
+
+
+        // ==========================================
+        // ENJIN PERMAINAN DAN PANGKALAN DATA SOALAN
+        // ==========================================
+        
+        // Pangkalan Data BM
+        const bmGamesData = {
+            1: [ { q: "🍎", options: ["Epal", "Oren", "Pisang"], a: "Epal" }, { q: "🐈", options: ["Ayam", "Kucing", "Lembu"], a: "Kucing" }, { q: "🚗", options: ["Bas", "Lori", "Kereta"], a: "Kereta" } ],
+            2: [ { q: "A P _ L", options: ["E", "O", "U"], a: "E" }, { q: "B U K _", options: ["A", "U", "I"], a: "U" }, { q: "M _ J A", options: ["E", "O", "A"], a: "E" } ],
+            3: [ { q: "B", options: ["d", "b", "p"], a: "b" }, { q: "M", options: ["n", "w", "m"], a: "m" }, { q: "G", options: ["g", "q", "p"], a: "g" } ],
+            4: [ { q: "📚", word: "BUKU", letters: ["U", "B", "U", "K"] }, { q: "👁️", word: "MATA", letters: ["A", "T", "M", "A"] }, { q: "🦶", word: "KAKI", letters: ["I", "K", "A", "K"] } ],
+            5: [ { q: "Kawasan kita belajar", options: ["Tandas", "Kelas", "Kantin"], a: "Kelas" }, { q: "Benda untuk tulis", options: ["Pemadam", "Buku", "Pensel"], a: "Pensel" }, { q: "Benda untuk potong", options: ["Gunting", "Gam", "Pembaris"], a: "Gunting" } ],
+            6: [ { q: "ba + ju =", options: ["bata", "baju", "bapa"], a: "baju" }, { q: "ro + ti =", options: ["rosa", "rori", "roti"], a: "roti" }, { q: "to + pi =", options: ["topi", "tolu", "toli"], a: "topi" } ],
+            7: [ { q: "🧑‍🍳", options: ["Ini guru.", "Ini tukang masak."], a: "Ini tukang masak." }, { q: "📖", options: ["Siti baca buku.", "Siti main bola."], a: "Siti baca buku." }, { q: "🌧️", options: ["Hari panas.", "Hari hujan."], a: "Hari hujan." } ],
+            8: [ { q: "Ikan", options: ["🐟", "🐓", "🐄"], a: "🐟" }, { q: "Kasut", options: ["👕", "👟", "👖"], a: "👟" }, { q: "Bunga", options: ["🌳", "🌺", "🍂"], a: "🌺" } ],
+            9: [ { q: "🚗", options: ["🚌", "🚗", "🚲"], a: "🚗" }, { q: "🌻", options: ["🌹", "🌺", "🌻"], a: "🌻" }, { q: "👕", options: ["👕", "👖", "👗"], a: "👕" } ],
+            10: [ { q: "🍎 (epal)", options: ["a", "e", "i"], a: "e" }, { q: "🐟 (ikan)", options: ["u", "o", "i"], a: "i" }, { q: "🐍 (ular)", options: ["a", "u", "e"], a: "u" } ],
+            11: [ { q: "Kucing", options: ["🐈", "🐄", "🐓"], a: "🐈" }, { q: "Lembu", options: ["🐕", "🐄", "🐑"], a: "🐄" }, { q: "Burung", options: ["🦅", "🐟", "🐢"], a: "🦅" } ],
+            12: [ { q: "Bulat", options: ["⭕", "⬛", "🔺"], a: "⭕" }, { q: "Segi Empat", options: ["⭐", "⭕", "⬛"], a: "⬛" }, { q: "Bintang", options: ["🔺", "⭐", "⬛"], a: "⭐" } ]
+        };
+
+        // Pangkalan Data Matematik
+        const mathGamesData = {
+            1: [ { q: "3", options: ["1", "3", "5"], a: "3" }, { q: "8", options: ["6", "8", "9"], a: "8" }, { q: "2", options: ["2", "4", "7"], a: "2" } ],
+            2: [ { q: "🔴🔴🔴", options: ["2", "3", "4"], a: "3" }, { q: "🔴", options: ["1", "2", "3"], a: "1" }, { q: "🔴🔴🔴🔴🔴", options: ["3", "4", "5"], a: "5" } ],
+            3: [ { q: "Paling Banyak?", options: ["🍎", "🍎🍎🍎", "🍎🍎"], a: "🍎🍎🍎" }, { q: "Paling Sikit?", options: ["🐱🐱", "🐱", "🐱🐱🐱"], a: "🐱" }, { q: "Paling Banyak?", options: ["⭐", "⭐⭐", "⭐⭐⭐⭐"], a: "⭐⭐⭐⭐" } ],
+            4: [ { q: "⭐⭐⭐⭐", options: ["3", "4", "5"], a: "4" }, { q: "⭐⭐", options: ["1", "2", "3"], a: "2" }, { q: "⭐⭐⭐⭐⭐", options: ["3", "4", "5"], a: "5" } ],
+            5: [ { q: "Lapan", options: ["6", "8", "10"], a: "8" }, { q: "Tujuh", options: ["7", "9", "6"], a: "7" }, { q: "Sepuluh", options: ["8", "9", "10"], a: "10" } ],
+            6: [ { q: "🟢🟢🟢🟢🟢🟢", options: ["5", "6", "7"], a: "6" }, { q: "🟢🟢🟢🟢🟢🟢🟢🟢", options: ["7", "8", "9"], a: "8" }, { q: "🟢🟢🟢🟢🟢🟢🟢🟢🟢🟢", options: ["8", "9", "10"], a: "10" } ],
+            7: [ { q: "Susun 1-4", word: "1234", letters: ["3", "1", "4", "2"] }, { q: "Susun 5-8", word: "5678", letters: ["7", "5", "8", "6"] }, { q: "Susun 10-13", word: "10111213", letters: ["12", "10", "13", "11"] } ],
+            8: [ { q: "4, _ , 6", options: ["3", "5", "7"], a: "5" }, { q: "8, 9, _", options: ["7", "10", "11"], a: "10" }, { q: "_, 2, 3", options: ["1", "4", "5"], a: "1" } ],
+            9: [ { q: "2 + 3 =", options: ["4", "5", "6"], a: "5" }, { q: "4 + 4 =", options: ["7", "8", "9"], a: "8" }, { q: "6 + 3 =", options: ["8", "9", "10"], a: "9" } ],
+            10: [ { q: "5 - 2 =", options: ["2", "3", "4"], a: "3" }, { q: "8 - 4 =", options: ["3", "4", "5"], a: "4" }, { q: "10 - 5 =", options: ["4", "5", "6"], a: "5" } ],
+            11: [ { q: "🪙 Emas", options: ["10 Sen", "20 Sen", "50 Sen"], a: "50 Sen" }, { q: "🪙 Perak Kecil", options: ["10 Sen", "20 Sen", "50 Sen"], a: "10 Sen" }, { q: "🪙 Perak Besar", options: ["10 Sen", "20 Sen", "50 Sen"], a: "20 Sen" } ],
+            12: [ { q: "Pukul Tiga", options: ["3:00", "4:00", "5:00"], a: "3:00" }, { q: "Pukul Lapan", options: ["7:00", "8:00", "9:00"], a: "8:00" }, { q: "Pukul Dua Belas", options: ["10:00", "11:00", "12:00"], a: "12:00" } ],
+            13: [ { q: "10 + 5 =", options: ["12", "15", "18"], a: "15" }, { q: "12 + 6 =", options: ["16", "18", "20"], a: "18" }, { q: "14 + 4 =", options: ["16", "18", "20"], a: "18" } ],
+            14: [ { q: "15 - 4 =", options: ["10", "11", "12"], a: "11" }, { q: "18 - 5 =", options: ["12", "13", "14"], a: "13" }, { q: "20 - 10 =", options: ["5", "10", "15"], a: "10" } ],
+            15: [ { q: "💵 Merah", options: ["RM1", "RM5", "RM10"], a: "RM10" }, { q: "💵 Biru", options: ["RM1", "RM5", "RM10"], a: "RM1" }, { q: "💵 Hijau", options: ["RM1", "RM5", "RM10"], a: "RM5" } ],
+            16: [ { q: "Siti ada 3 epal. Ali beri 2 epal. Berapa epal Siti?", options: ["4", "5", "6"], a: "5" }, { q: "Abu ada 5 guli. Dia hilang 1 guli. Baki guli?", options: ["3", "4", "5"], a: "4" }, { q: "Beli aiskrim RM2. Beli air RM1. Jumlah?", options: ["RM2", "RM3", "RM4"], a: "RM3" } ]
+        };
+
+        // Pangkalan Data Pengurusan Diri
+        const diriGamesData = {
+            1: [ { q: "Guna untuk melihat 👀", options: ["Mata", "Telinga", "Hidung"], a: "Mata" }, { q: "Guna untuk dengar 👂", options: ["Mulut", "Kaki", "Telinga"], a: "Telinga" }, { q: "Guna untuk bau 👃", options: ["Hidung", "Mata", "Tangan"], a: "Hidung" } ],
+            2: [ { q: "Cuci Rambut 🧴", options: ["Sabun", "Syampu", "Ubat Gigi"], a: "Syampu" }, { q: "Lap Badan 🧻", options: ["Baju", "Tuala", "Selimut"], a: "Tuala" }, { q: "Gosok Gigi 🪥", options: ["Berus Gigi", "Sikat", "Sabun"], a: "Berus Gigi" } ],
+            3: [ { q: "Pakai di kaki 👟", options: ["Topi", "Kasut", "Baju"], a: "Kasut" }, { q: "Pakai di kepala 🧢", options: ["Topi", "Seluar", "Stoking"], a: "Topi" }, { q: "Waktu Hujan 🧥", options: ["Baju Hujan", "Singlet", "Kemeja"], a: "Baju Hujan" } ],
+            4: [ { q: "Matahari Terang 🌞", options: ["Siang", "Malam", "Hujan"], a: "Siang" }, { q: "Bulan & Bintang 🌙", options: ["Siang", "Malam", "Panas"], a: "Malam" }, { q: "Waktu Tidur 🛏️", options: ["Pagi", "Tengahari", "Malam"], a: "Malam" } ],
+            5: [ { q: "Susun langkah Gosok Gigi 🪥", word: "UbatGosokKumur", letters: ["Kumur", "Ubat", "Gosok"] }, { q: "Susun langkah Cuci Tangan 🤲", word: "AirSabunBilas", letters: ["Sabun", "Air", "Bilas"] }, { q: "Buang Sampah 🗑️", word: "KutipTongBasuh", letters: ["Basuh", "Kutip", "Tong"] } ],
+            6: [ { q: "Makanan Sihat 🥗", options: ["🍎", "🍬", "🍦"], a: "🍎" }, { q: "Minuman Sihat 🥛", options: ["Air Gas", "Susu", "Sirap"], a: "Susu" }, { q: "Snek Baik 🍌", options: ["Kek", "Pisang", "Keropok"], a: "Pisang" } ],
+            7: [ { q: "Untuk Minum 🥤", options: ["Cawan", "Pinggan", "Sudu"], a: "Cawan" }, { q: "Letak Nasi 🍽️", options: ["Cawan", "Pinggan", "Garpu"], a: "Pinggan" }, { q: "Hirup Sup 🥄", options: ["Sudu", "Pisau", "Pinggan"], a: "Sudu" } ],
+            8: [ { q: "Tandas Lelaki 🚹", options: ["Lelaki", "Perempuan", "OKU"], a: "Lelaki" }, { q: "Tandas OKU ♿", options: ["Lelaki", "Perempuan", "OKU"], a: "OKU" }, { q: "Tandas Perempuan 🚺", options: ["Lelaki", "Perempuan", "OKU"], a: "Perempuan" } ],
+            9: [ { q: "Bahaya & Tajam 🔪", options: ["Bantal", "Pisau", "Bola"], a: "Pisau" }, { q: "Bahaya & Panas ♨️", options: ["Seterika", "Kipas", "Peti Ais"], a: "Seterika" }, { q: "Bahaya Api 🔥", options: ["Air", "Mancis", "Tanah"], a: "Mancis" } ],
+            10: [ { q: "Susun langkah Mandi 🚿", word: "AirSabunBilas", letters: ["Bilas", "Air", "Sabun"] }, { q: "Susun Cuci Rambut 🧴", word: "AirSyampuBilas", letters: ["Syampu", "Air", "Bilas"] }, { q: "Lepas Mandi kena... 🧻", word: "LapBajuSikat", letters: ["Baju", "Sikat", "Lap"] } ],
+            11: [ { q: "Sebelum makan... 🤲", options: ["Tidur", "Basuh Tangan", "Main"], a: "Basuh Tangan" }, { q: "Masa makan jangan... 🤐", options: ["Duduk diam", "Baca Doa", "Bercakap kotor"], a: "Bercakap kotor" }, { q: "Makan guna tangan... ✋", options: ["Tangan Kanan", "Tangan Kiri", "Kaki"], a: "Tangan Kanan" } ],
+            12: [ { q: "Tempat Tidur 🛏️", options: ["Dapur", "Bilik Tidur", "Tandas"], a: "Bilik Tidur" }, { q: "Tempat Masak 🍳", options: ["Dapur", "Bilik Tidur", "Tandas"], a: "Dapur" }, { q: "Tempat Mandi 🚿", options: ["Dapur", "Bilik", "Tandas"], a: "Tandas" } ],
+            13: [ { q: "Beli barang guna... 💵", options: ["Duit/Wang", "Daun", "Batu"], a: "Duit/Wang" }, { q: "Simpan duit di... 🐷", options: ["Tong Sampah", "Tabung", "Kasut"], a: "Tabung" }, { q: "Beli makan di sekolah 🏫", options: ["Kantin", "Tandas", "Padang"], a: "Kantin" } ],
+            14: [ { type: "dressup", title: "Pilih Pakaian", q: "Mari pakai baju!" } ],
+            15: [ { q: "Lantai Basah ⚠️", options: ["Jalan Laju", "Hati-hati", "Tidur"], a: "Hati-hati" }, { q: "Simbol Berhenti 🛑", options: ["Lari", "Berhenti", "Lompat"], a: "Berhenti" }, { q: "Kawasan Panas/Api 🔥", options: ["Main", "Jauhkan diri", "Sentuh"], a: "Jauhkan diri" } ],
+            16: [ { q: "Polis / Ambulans 🚓", options: ["999", "123", "111"], a: "999" }, { q: "Ada kebakaran! Panggil... 🚒", options: ["Polis", "Bomba", "Doktor"], a: "Bomba" }, { q: "Sakit di sekolah? 👩‍🏫", options: ["Bagitahu Cikgu", "Lari", "Diam"], a: "Bagitahu Cikgu" } ]
+        };
+
+        // Pangkalan Data Sosial & Emosi
+        const emosiGamesData = {
+            1: [ { q: "Muka Gembira 😁", options: ["😁", "😭", "😡"], a: "😁" }, { q: "Senyum 😊", options: ["😊", "😠", "😢"], a: "😊" }, { q: "Ketawa 😂", options: ["😂", "😭", "😱"], a: "😂" } ],
+            2: [ { q: "Muka Sedih 😢", options: ["😁", "😢", "😡"], a: "😢" }, { q: "Menangis 😭", options: ["😊", "😭", "😠"], a: "😭" }, { q: "Rasa Kecewa 😞", options: ["😂", "😞", "😱"], a: "😞" } ],
+            3: [ { q: "Muka Marah 😡", options: ["😁", "😭", "😡"], a: "😡" }, { q: "Rasa Geram 😠", options: ["😊", "😭", "😠"], a: "😠" }, { q: "Mengamuk 🤬", options: ["😂", "😞", "🤬"], a: "🤬" } ],
+            4: [ { q: "Muka Takut 😱", options: ["😁", "😭", "😱"], a: "😱" }, { q: "Terkejut 😧", options: ["😧", "😭", "😠"], a: "😧" }, { q: "Menggigil 🥶", options: ["🥶", "😞", "🤬"], a: "🥶" } ],
+            5: [ { q: "Dapat Hadiah 🎁", options: ["Gembira 😁", "Sedih 😢"], a: "Gembira 😁" }, { q: "Jatuh Luka 🩹", options: ["Gembira 😁", "Sedih 😢"], a: "Sedih 😢" }, { q: "Kawan Ambil Mainan 🧸", options: ["Marah 😡", "Gembira 😁"], a: "Marah 😡" } ],
+            6: [ { q: "Cikgu puji saya 🌟", options: ["Bangga 😎", "Takut 😱"], a: "Bangga 😎" }, { q: "Duduk sorang dalam gelap 🌑", options: ["Gembira 😁", "Takut 😱"], a: "Takut 😱" }, { q: "Kucing saya hilang 🐈", options: ["Sedih 😭", "Ketawa 😂"], a: "Sedih 😭" } ],
+            7: [ { q: "Susun: Gembira, Sedih, Marah", word: "😁😢😡", letters: ["😢", "😁", "😡"] }, { q: "Susun: Suka, Takut, Nangis", word: "😍😱😭", letters: ["😱", "😍", "😭"] }, { q: "Susun: Baik, Terkejut", word: "👍😧", letters: ["😧", "👍"] } ],
+            8: [ { q: "Mana yang baik? 👍", options: ["Tolong Kawan 🤝", "Pukul Kawan 👊"], a: "Tolong Kawan 🤝" }, { q: "Mana yang betul? 👍", options: ["Kemas Meja 🧹", "Buang Sampah Merata 🗑️"], a: "Kemas Meja 🧹" }, { q: "Masa Cikgu Mengajar 👩‍🏫", options: ["Duduk Diam 🪑", "Bising 🗣️"], a: "Duduk Diam 🪑" } ],
+            9: [ { q: "Mana yang SALAH? 👎", options: ["Gigit Kawan 🦷", "Kongsi Mainan 🧸"], a: "Gigit Kawan 🦷" }, { q: "Mana yang TIDAK BAIK? 👎", options: ["Tarik Rambut 👧", "Beri Salam 🙋"], a: "Tarik Rambut 👧" }, { q: "Jangan buat ini... 🚫", options: ["Conteng Dinding 🖍️", "Lukis di Kertas 📝"], a: "Conteng Dinding 🖍️" } ],
+            10: [ { q: "Kawan nak pinjam pensel ✏️", options: ["Beri Pinjam 🤲", "Kedekut 🙅"], a: "Beri Pinjam 🤲" }, { q: "Bila jumpa kawan 👋", options: ["Senyum & Salam 😊", "Jeling 👀"], a: "Senyum & Salam 😊" }, { q: "Kawan jatuh 🤕", options: ["Tolong Bangun 🤝", "Ketawakan 😂"], a: "Tolong Bangun 🤝" } ],
+            11: [ { q: "Cikgu beri gula-gula 🍬", options: ["Terima Kasih 🙏", "Diam Sahaja 🤐"], a: "Terima Kasih 🙏" }, { q: "Kawan tolong angkat buku 📚", options: ["Terima Kasih kawan! 🤝", "Lari jauh 🏃"], a: "Terima Kasih kawan! 🤝" }, { q: "Ibu masak sedap 🍲", options: ["Terima Kasih Ibu ❤️", "Tak sedap! 🤢"], a: "Terima Kasih Ibu ❤️" } ],
+            12: [ { q: "Terlanggar kawan 💥", options: ["Minta Maaf 🙇", "Marah dia 😡"], a: "Minta Maaf 🙇" }, { q: "Patahkan pembaris kawan 📏", options: ["Minta Maaf 🙏", "Lari 🏃"], a: "Minta Maaf 🙏" }, { q: "Lupa buat kerja sekolah 📖", options: ["Maafkan saya Cikgu 🙇", "Tipu Cikgu 🤥"], a: "Maafkan saya Cikgu 🙇" } ],
+            13: [ { q: "Cikgu bawa buku banyak 📚", options: ["Tolong Bawa 🤲", "Tengok Sahaja 👀"], a: "Tolong Bawa 🤲" }, { q: "Kawan tiada pensel ✏️", options: ["Pinjamkan 🤲", "Biar dia 🙅"], a: "Pinjamkan 🤲" }, { q: "Nampak sampah di lantai 🗑️", options: ["Kutip & Buang 🚮", "Biarkan 🚶"], a: "Kutip & Buang 🚮" } ],
+            14: [ { q: "Bila rasa marah 😡", options: ["Tarik Nafas Panjang 😮‍💨", "Pukul Meja 💥"], a: "Tarik Nafas Panjang 😮‍💨" }, { q: "Kalau nak mengamuk 🤬", options: ["Kira 1 sampai 10 🔢", "Menjerit Kuat 🗣️"], a: "Kira 1 sampai 10 🔢" }, { q: "Bila tak puas hati 😤", options: ["Cakap elok-elok 🗣️", "Baling Barang 🥎"], a: "Cakap elok-elok 🗣️" } ],
+            15: [ { q: "Susun ayat", word: "MintaMaafCikgu", letters: ["Maaf", "Cikgu", "Minta"] }, { q: "Susun ayat", word: "MaafkanSayaKawan", letters: ["Saya", "Kawan", "Maafkan"] }, { q: "Susun ayat", word: "TerimaKasihIbu", letters: ["Ibu", "Terima", "Kasih"] } ],
+            16: [ { q: "Kawan ambil pensel tanpa izin. Kita mesti...", options: ["Bagi tahu Cikgu 👩‍🏫", "Pukul dia 👊"], a: "Bagi tahu Cikgu 👩‍🏫" }, { q: "Kita tumpahkan air Ahmad. Kita mesti...", options: ["Minta maaf & Lap air 🧻", "Lari sembunyi 🏃"], a: "Minta maaf & Lap air 🧻" }, { q: "Kawan ejek nama kita. Kita mesti...", options: ["Sabar & Lapor Cikgu 🧘", "Ejek dia balik 🤬"], a: "Sabar & Lapor Cikgu 🧘" } ]
+        };
+
+        // Pangkalan Data Sensori Visual
+        const visualGamesData = {
+            1: [ { q: "Warna Merah 🔴", options: ["🔴", "🔵", "🟢"], a: "🔴" }, { q: "Warna Kuning 🟡", options: ["🟣", "🟡", "🔵"], a: "🟡" }, { q: "Warna Biru 🔵", options: ["🔴", "🟢", "🔵"], a: "🔵" } ],
+            2: [ { q: "Bentuk Bulat ⭕", options: ["⭕", "⬛", "🔺"], a: "⭕" }, { q: "Bintang ⭐", options: ["🔺", "⭐", "⬛"], a: "⭐" }, { q: "Hati ❤️", options: ["❤️", "⭐", "⭕"], a: "❤️" } ],
+            3: [ { q: "Cari yang SAMA: 🐶", options: ["🐱", "🐶", "🐰"], a: "🐶" }, { q: "Cari yang SAMA: 🚗", options: ["🚗", "🚌", "🚲"], a: "🚗" }, { q: "Cari yang SAMA: 🌻", options: ["🌹", "🌺", "🌻"], a: "🌻" } ],
+            4: [ { q: "Paling BESAR?", options: ["🐘", "🐈", "🐜"], a: "🐘" }, { q: "Buah paling BESAR?", options: ["🍉", "🍎", "🍇"], a: "🍉" }, { q: "Kenderaan paling BESAR?", options: ["✈️", "🚗", "🚲"], a: "✈️" } ],
+            5: [ { q: "Paling KECIL?", options: ["🐘", "🐈", "🐜"], a: "🐜" }, { q: "Buah paling KECIL?", options: ["🍉", "🍎", "🍇"], a: "🍇" }, { q: "Haiwan paling KECIL?", options: ["🐋", "🐎", "🐌"], a: "🐌" } ],
+            6: [ { q: "Mana yang BEZA?", options: ["🚗", "🚗", "✈️"], a: "✈️" }, { q: "Mana yang BEZA?", options: ["🍎", "🍌", "🍎"], a: "🍌" }, { q: "Mana yang BEZA?", options: ["🐶", "🐶", "🐱"], a: "🐱" } ],
+            7: [ { q: "Warna Paling GELAP?", options: ["⬛", "⬜", "🟨"], a: "⬛" }, { q: "Cari Bayang (Hitam) 🌑", options: ["🌞", "🌕", "🌑"], a: "🌑" }, { q: "Langit Gelap Malam 🌌", options: ["🌇", "🏙️", "🌌"], a: "🌌" } ],
+            8: [ { q: "Pasangan Kasut 👟", options: ["👟", "🧤", "🧣"], a: "👟" }, { q: "Pasangan Stoking 🧦", options: ["🩳", "🧦", "🧢"], a: "🧦" }, { q: "Pasangan Cermin Mata 👓", options: ["🕶️", "🎒", "🧳"], a: "🕶️" } ],
+            9: [ { q: "Arah ke ATAS ⬆️", options: ["⬆️", "⬇️", "➡️"], a: "⬆️" }, { q: "Tunjuk ke BAWAH 👇", options: ["👆", "👇", "👉"], a: "👇" }, { q: "Anak Panah NAIK 🔼", options: ["🔽", "🔼", "◀️"], a: "🔼" } ],
+            10: [ { q: "Arah ke KANAN ➡️", options: ["⬅️", "➡️", "⬆️"], a: "➡️" }, { q: "Tunjuk ke KIRI 👈", options: ["👉", "👈", "👆"], a: "👈" }, { q: "Kereta gerak ke KANAN", options: ["🚗💨", "💨🚗"], a: "🚗💨" } ],
+            11: [ { q: "Lengkapkan Bulan 🌙", options: ["🌙", "⭐", "☀️"], a: "🌙" }, { q: "Cantum Hati 💔", options: ["❤️", "💖", "💔"], a: "💔" }, { q: "Pelangi 🌈", options: ["🌩️", "🌈", "☁️"], a: "🌈" } ],
+            12: [ { q: "Susun ikut Saiz (Kecil ke Besar)", word: "🐜🐈🐘", letters: ["🐘", "🐜", "🐈"] }, { q: "Sikit ke Banyak", word: "⭐🌟✨", letters: ["✨", "⭐", "🌟"] }, { q: "Rendah ke Tinggi", word: "🌱🌿🌳", letters: ["🌳", "🌱", "🌿"] } ],
+            13: [ { q: "Corak Seterusnya? 🔴 🔵 🔴 _", options: ["🔵", "🔴", "🟢"], a: "🔵" }, { q: "Corak Seterusnya? ⭐ 🌙 ⭐ _", options: ["🌙", "☀️", "⭐"], a: "🌙" }, { q: "Corak Seterusnya? 🍎 🍌 🍎 _", options: ["🍎", "🍌", "🍇"], a: "🍌" } ],
+            14: [ { q: "Cari Bintang ⭐ tersembunyi", options: ["🌟💫✨", "🌙☀️⭐", "☁️⛈️🌨️"], a: "🌙☀️⭐" }, { q: "Cari Hati ❤️", options: ["🧡💛💚", "💙💜🖤", "🤍🤎❤️"], a: "🤍🤎❤️" }, { q: "Cari Epal Merah 🍎", options: ["🍏🍐🍉", "🍓🍒🍎", "🍊🍋🍌"], a: "🍓🍒🍎" } ],
+            15: [ { q: "Tiru Corak: 🔴 🔵 🟢", word: "🔴🔵🟢", letters: ["🟢", "🔴", "🔵"] }, { q: "Tiru Corak: ⬛ ⬜ ⬛", word: "⬛⬜⬛", letters: ["⬜", "⬛", "⬛"] }, { q: "Tiru Corak: ⭐ 🌙 ☀️", word: "⭐🌙☀️", letters: ["☀️", "⭐", "🌙"] } ],
+            16: [ { q: "Susun Tumbesaran Ayam", word: "🥚🐣🐥", letters: ["🐣", "🐥", "🥚"] }, { q: "Kitaran Pokok Bunga", word: "🌱🌿🌻", letters: ["🌿", "🌻", "🌱"] }, { q: "Masa untuk mekar", word: "🥀🌹🌷", letters: ["🌷", "🥀", "🌹"] } ] 
+        };
+
+        // Pangkalan Data GAME CEPAT 5 MINIT Baharu (Aktiviti Pantas, Reaksi, Memori)
+        const gameCepatGamesData = {
+            // Low Function (Reaksi Visual Pantas)
+            1: [ { q: "Pecahkan Belon Merah! 🎈", options: ["🎈", "🟢", "🔵"], a: "🎈" }, { q: "Pecahkan Belon Hijau! 🟢", options: ["🎈", "🟢", "🔵"], a: "🟢" }, { q: "Pecahkan Belon Biru! 🔵", options: ["🎈", "🟢", "🔵"], a: "🔵" } ],
+            2: [ { q: "Tangkap Kucing! 🐱", options: ["🐶", "🐱", "🐰"], a: "🐱" }, { q: "Tangkap Anjing! 🐶", options: ["🐶", "🐱", "🐰"], a: "🐶" }, { q: "Tangkap Arnab! 🐰", options: ["🐶", "🐱", "🐰"], a: "🐰" } ],
+            3: [ { q: "Bayang siapa? 👤🐱", options: ["🐶", "🐱", "🐭"], a: "🐱" }, { q: "Bayang siapa? 👤🍎", options: ["🍎", "🍌", "🍉"], a: "🍎" }, { q: "Bayang siapa? 👤🚗", options: ["✈️", "🚗", "🚌"], a: "🚗" } ],
+            4: [ { q: "Moo! Moo! 🔊", options: ["🐄", "🐈", "🐓"], a: "🐄" }, { q: "Meow! Meow! 🔊", options: ["🐄", "🐈", "🐓"], a: "🐈" }, { q: "Kok! Kok! 🔊", options: ["🐄", "🐈", "🐓"], a: "🐓" } ],
+            
+            // Medium Low (Ingatan & Analisis Pantas)
+            5: [ { q: "Mana yang ganjil? 👀", options: ["🍎", "🍎", "🍌"], a: "🍌" }, { q: "Mana yang ganjil? 👀", options: ["🚗", "🚌", "🚗"], a: "🚌" }, { q: "Mana yang ganjil? 👀", options: ["🐱", "🐱", "🐶"], a: "🐶" } ],
+            6: [ { q: "Tadi warna Merah 🔴. Mana satu?", options: ["🔴", "🔵", "🟢"], a: "🔴" }, { q: "Tadi warna Kuning 🟡. Mana satu?", options: ["🟣", "🟡", "🔵"], a: "🟡" }, { q: "Tadi warna Hijau 🟢. Mana satu?", options: ["🔴", "🟢", "🔵"], a: "🟢" } ],
+            7: [ { q: "Ibu Ayam 🐓. Mana anaknya?", options: ["🐣", "🐶", "🐱"], a: "🐣" }, { q: "Ibu Kucing 🐈. Mana anaknya?", options: ["🐶", "🐱", "🐰"], a: "🐱" }, { q: "Ibu Lembu 🐄. Mana anaknya?", options: ["🐑", "🐎", "🐄"], a: "🐄" } ],
+            8: [ { q: "Kira cepat! 🍓🍓", options: ["1", "2", "3"], a: "2" }, { q: "Kira cepat! 🍓🍓🍓", options: ["2", "3", "4"], a: "3" }, { q: "Kira cepat! 🍓", options: ["1", "2", "3"], a: "1" } ],
+
+            // Medium High (Logik & Susunan Kepantasan)
+            9: [ { q: "Susun Cepat!", word: "123", letters: ["2", "1", "3"] }, { q: "Susun Cepat!", word: "456", letters: ["6", "4", "5"] }, { q: "Susun Cepat!", word: "789", letters: ["8", "9", "7"] } ],
+            10: [ { q: "Susun Cepat!", word: "ABC", letters: ["B", "A", "C"] }, { q: "Susun Cepat!", word: "DEF", letters: ["F", "D", "E"] }, { q: "Susun Cepat!", word: "GHI", letters: ["H", "I", "G"] } ],
+            11: [ { q: "Tadi ada 🍎🍌🍉. Sekarang 🍎🍉. Hilang?", options: ["🍎", "🍌", "🍉"], a: "🍌" }, { q: "Tadi ada 🚗🚌🚙. Sekarang 🚌🚙. Hilang?", options: ["🚗", "🚌", "🚙"], a: "🚗" }, { q: "Tadi ada 🐱🐶🐰. Sekarang 🐱🐶. Hilang?", options: ["🐱", "🐶", "🐰"], a: "🐰" } ],
+            12: [ { q: "Cepat! Muka Gembira 😁", options: ["😁", "😭", "😡"], a: "😁" }, { q: "Cepat! Muka Sedih 😢", options: ["😁", "😢", "😡"], a: "😢" }, { q: "Cepat! Muka Marah 😡", options: ["😁", "😭", "😡"], a: "😡" } ],
+
+            // High Function (Cabaran Minda Pantas)
+            13: [ { q: "Cari 🐢 dalam 🐊🐊🐢🐊", options: ["🐊", "🐢", "🐉"], a: "🐢" }, { q: "Cari 🍓 dalam 🍎🍎🍓🍎", options: ["🍎", "🍓", "🍒"], a: "🍓" }, { q: "Cari 🚙 dalam 🚗🚗🚙🚗", options: ["🚗", "🚙", "🚌"], a: "🚙" } ],
+            14: [ { q: "Sambung Corak: 🐶 🐱 🐶 🐱 🐶 _", options: ["🐶", "🐱", "🐭"], a: "🐱" }, { q: "Sambung Corak: 🍎 🍌 🍎 🍌 🍎 _", options: ["🍎", "🍌", "🍇"], a: "🍌" }, { q: "Sambung Corak: 🚗 🚌 🚗 🚌 🚗 _", options: ["🚗", "🚌", "🚙"], a: "🚌" } ],
+            15: [ { q: "Panas 🔥 lawan...", options: ["Sejuk ❄️", "Hujan 🌧️", "Terang ☀️"], a: "Sejuk ❄️" }, { q: "Besar 🐘 lawan...", options: ["Kecil 🐜", "Tinggi 🦒", "Laju 🐆"], a: "Kecil 🐜" }, { q: "Cepat 🐇 lawan...", options: ["Lambat 🐢", "Besar 🐘", "Kuat 🦁"], a: "Lambat 🐢" } ],
+            16: [ { q: "Susun Kata Cepat!", word: "BOLA", letters: ["L", "O", "B", "A"] }, { q: "Susun Kata Cepat!", word: "BUKU", letters: ["U", "B", "U", "K"] }, { q: "Susun Kata Cepat!", word: "MEJA", letters: ["J", "E", "M", "A"] } ]
+        };
+
+        const databases = { 'bm': bmGamesData, 'math': mathGamesData, 'diri': diriGamesData, 'emosi': emosiGamesData, 'visual': visualGamesData, 'gamecepat': gameCepatGamesData };
+        let currentCategory = null;
+        let currentGameId = null;
+        let currentQuestionIndex = 0;
+        let currentArrangeState = []; 
+        let currentArrangeTarget = ""; 
+        let dressupState = { gender: null, top: null, bottom: null, shoes: null };
+
+        // Fungsi Memulakan Permainan Berdasarkan Kategori
+        function startGame(category, id, title) {
+            playClick();
+            currentCategory = category;
+            currentGameId = id;
+            currentQuestionIndex = 0;
+            
+            // Tukar View
+            document.getElementById('main-menu-area').classList.add('hidden');
+            document.getElementById('main-footer').classList.add('hidden');
+            document.getElementById('game-area').classList.remove('hidden');
+            document.getElementById('game-area').classList.add('flex');
+            document.getElementById('game-title').textContent = title;
+
+            loadQuestion();
+        }
+
+        function closeGame() {
+            playClick();
+            document.getElementById('game-area').classList.add('hidden');
+            document.getElementById('game-area').classList.remove('flex');
+            document.getElementById('main-menu-area').classList.remove('hidden');
+            document.getElementById('main-footer').classList.remove('hidden');
+            currentGameId = null;
+            currentCategory = null;
+        }
+
+        function loadQuestion() {
+            const gameData = databases[currentCategory][currentGameId];
+            if(currentQuestionIndex >= gameData.length) {
+                // Game Habis
+                showToast("Tahniah! Anda berjaya habiskan aktiviti ini.");
+                setTimeout(closeGame, 2000);
+                return;
+            }
+
+            const qData = gameData[currentQuestionIndex];
+            const qArea = document.getElementById('game-question-area');
+            const oArea = document.getElementById('game-options-area');
+            const aArea = document.getElementById('game-arrange-area');
+            const dArea = document.getElementById('game-dressup-area');
+
+            // Bersihkan paparan
+            qArea.innerHTML = '';
+            oArea.innerHTML = '';
+            aArea.classList.add('hidden');
+            dArea.classList.add('hidden');
+            qArea.classList.remove('hidden');
+            oArea.classList.remove('hidden');
+
+            // --- Enjin Mod Interaktif (Dress Up / Susun / Biasa) ---
+            if (qData.type === 'dressup') {
+                // MOD DRESS UP
+                qArea.classList.add('hidden');
+                oArea.classList.add('hidden');
+                dArea.classList.remove('hidden');
+                dArea.classList.add('flex');
+                initDressup(dArea);
+                
+            } else if(qData.letters) {
+                // MOD SUSUN HURUF/PERKATAAN
+                oArea.classList.add('hidden');
+                aArea.classList.remove('hidden');
+                aArea.classList.add('flex');
+                
+                let textSize = qData.q.length > 20 ? 'text-4xl md:text-5xl' : 'text-5xl md:text-7xl';
+                qArea.innerHTML = `<div class="font-kids font-bold text-blue-900 ${textSize} leading-tight tracking-wide p-4">${qData.q}</div>`;
+                
+                currentArrangeTarget = qData.word;
+                currentArrangeState = Array(qData.letters.length).fill("");
+                renderArrangeBoard(qData.letters);
+                
+            } else {
+                // MOD KUIZ BIASA
+                let textSize = 'text-8xl md:text-[8rem]'; 
+                if (qData.q.length > 40) { textSize = 'text-3xl md:text-4xl'; } 
+                else if (qData.q.length > 20) { textSize = 'text-4xl md:text-5xl'; } 
+                else if (qData.q.length > 10) { textSize = 'text-5xl md:text-7xl'; }
+
+                qArea.innerHTML = `<div class="font-kids font-bold text-blue-900 ${textSize} leading-tight tracking-wide p-4">${qData.q}</div>`;
+                
+                oArea.className = `grid gap-6 w-full ${qData.options.length === 3 ? 'grid-cols-1 md:grid-cols-3' : 'grid-cols-1 md:grid-cols-2'}`;
+                
+                qData.options.forEach(opt => {
+                    const colors = ['blue', 'green', 'orange', 'purple', 'pink'];
+                    const c = colors[Math.floor(Math.random() * colors.length)];
+                    const btn = document.createElement('button');
+                    let optSize = opt.length > 12 ? 'text-2xl md:text-3xl' : 'text-4xl md:text-5xl';
+                    
+                    btn.className = `btn-3d bg-white border-8 border-${c}-400 rounded-3xl p-6 md:p-8 font-kids font-bold ${optSize} text-${c}-700 shadow-[0_8px_0_currentColor] hover:bg-${c}-50 w-full break-words flex flex-col items-center justify-center`;
+                    btn.textContent = opt;
+                    btn.onclick = () => checkAnswer(opt, qData.a);
+                    oArea.appendChild(btn);
+                });
+            }
+        }
+
+        // --- Logik Khas: Aktiviti Pakai Baju (Dress Up) ---
+        function initDressup(dArea) {
+            dressupState = { gender: null, top: null, bottom: null, shoes: null };
+            dArea.innerHTML = `
+                <div class="bg-white p-8 rounded-[3rem] border-8 border-pink-300 shadow-xl w-full text-center max-w-2xl animate-pop">
+                    <h3 class="font-kids text-4xl text-pink-600 font-bold mb-8">Pilih Model Murid</h3>
+                    <div class="flex justify-center gap-8">
+                        <button onclick="startDressupModel('boy')" class="btn-3d flex flex-col items-center bg-blue-50 border-8 border-blue-400 p-6 rounded-3xl hover:bg-blue-100 shadow-[0_8px_0_#60a5fa]">
+                            <span class="text-8xl mb-4">👦</span>
+                            <span class="font-kids font-bold text-2xl text-blue-800">Lelaki</span>
+                        </button>
+                        <button onclick="startDressupModel('girl')" class="btn-3d flex flex-col items-center bg-pink-50 border-8 border-pink-400 p-6 rounded-3xl hover:bg-pink-100 shadow-[0_8px_0_#f472b6]">
+                            <span class="text-8xl mb-4">👧</span>
+                            <span class="font-kids font-bold text-2xl text-pink-800">Perempuan</span>
+                        </button>
+                    </div>
+                </div>
+            `;
+        }
+
+        function startDressupModel(gender) {
+            playClick();
+            dressupState.gender = gender;
+            renderDressupRoom();
+        }
+
+        function renderDressupRoom() {
+            const dArea = document.getElementById('game-dressup-area');
+            const headEmoji = dressupState.gender === 'boy' ? '👦' : '👧';
+            const themeColor = dressupState.gender === 'boy' ? 'blue' : 'pink';
+            
+            // Item Pakaian Berbeza ikut Jantina
+            const tops = dressupState.gender === 'boy' ? ['👕', '👔', '🥋'] : ['👚', '👗', '🧥'];
+            const bottoms = dressupState.gender === 'boy' ? ['👖', '🩳', '🩲'] : ['👖', '🩰', '🩳']; // 🩰 = skirt visual proxy
+            const shoesList = ['👞', '👟', '🩴'];
+
+            dArea.innerHTML = `
+                <div class="flex flex-col md:flex-row gap-8 w-full max-w-5xl items-start justify-center animate-pop">
+                    
+                    <!-- Patung Kertas (Model) -->
+                    <div class="bg-white border-8 border-${themeColor}-300 rounded-[3rem] p-8 flex flex-col items-center shadow-xl w-full md:w-1/3 min-w-[280px]">
+                        <div class="text-8xl z-30 drop-shadow-md mb-[-10px]">${headEmoji}</div>
+                        
+                        <div id="model-top" class="w-32 h-32 border-4 border-dashed border-gray-300 rounded-2xl flex items-center justify-center text-7xl bg-gray-50 z-20 transition-all mb-[-10px]">
+                            ${dressupState.top || '<span class="text-gray-300 text-3xl">Baju</span>'}
+                        </div>
+                        
+                        <div id="model-bottom" class="w-32 h-32 border-4 border-dashed border-gray-300 rounded-2xl flex items-center justify-center text-7xl bg-gray-50 z-10 transition-all mb-[-10px]">
+                            ${dressupState.bottom || '<span class="text-gray-300 text-3xl">Seluar</span>'}
+                        </div>
+                        
+                        <div id="model-shoes" class="w-32 h-20 border-4 border-dashed border-gray-300 rounded-2xl flex items-center justify-center text-6xl bg-gray-50 transition-all">
+                            ${dressupState.shoes || '<span class="text-gray-300 text-3xl">Kasut</span>'}
+                        </div>
+                        <div class="mt-6 font-kids font-bold text-xl text-gray-500">Pakaikan semua baju!</div>
+                    </div>
+
+                    <!-- Almari Pakaian (Pilihan) -->
+                    <div class="bg-${themeColor}-50 border-8 border-${themeColor}-400 rounded-[3rem] p-8 flex flex-col gap-6 w-full md:w-2/3 shadow-xl">
+                        <h3 class="font-kids text-3xl text-${themeColor}-800 font-bold mb-2">Almari Pakaian</h3>
+                        
+                        <!-- Pilihan Baju -->
+                        <div class="flex flex-wrap gap-4 justify-center bg-white p-4 rounded-2xl border-4 border-${themeColor}-200">
+                            ${tops.map(item => `
+                                <button onclick="equipDressupItem('top', '${item}')" class="btn-3d text-5xl bg-gray-100 hover:bg-${themeColor}-100 p-4 rounded-xl border-4 border-gray-200 hover:border-${themeColor}-400 transition-colors shadow-md">
+                                    ${item}
+                                </button>
+                            `).join('')}
+                        </div>
+
+                        <!-- Pilihan Seluar -->
+                        <div class="flex flex-wrap gap-4 justify-center bg-white p-4 rounded-2xl border-4 border-${themeColor}-200">
+                            ${bottoms.map(item => `
+                                <button onclick="equipDressupItem('bottom', '${item}')" class="btn-3d text-5xl bg-gray-100 hover:bg-${themeColor}-100 p-4 rounded-xl border-4 border-gray-200 hover:border-${themeColor}-400 transition-colors shadow-md">
+                                    ${item}
+                                </button>
+                            `).join('')}
+                        </div>
+
+                        <!-- Pilihan Kasut -->
+                        <div class="flex flex-wrap gap-4 justify-center bg-white p-4 rounded-2xl border-4 border-${themeColor}-200">
+                            ${shoesList.map(item => `
+                                <button onclick="equipDressupItem('shoes', '${item}')" class="btn-3d text-5xl bg-gray-100 hover:bg-${themeColor}-100 p-4 rounded-xl border-4 border-gray-200 hover:border-${themeColor}-400 transition-colors shadow-md">
+                                    ${item}
+                                </button>
+                            `).join('')}
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function equipDressupItem(type, item) {
+            playClick();
+            dressupState[type] = item;
+            renderDressupRoom(); // Render semula patung dengan baju baru
+            
+            // Semak jika semua dah pakai
+            if(dressupState.top && dressupState.bottom && dressupState.shoes) {
+                setTimeout(() => {
+                    launchReward('Cantiknya!', 'fa-shirt', 'text-pink-500');
+                    currentQuestionIndex++;
+                    setTimeout(loadQuestion, 2500);
+                }, 500);
+            }
+        }
+
+
+        // --- Logik Kuiz Biasa ---
+        function checkAnswer(selected, correct) {
+            if(selected === correct) {
+                launchReward('Laju betul!', 'fa-bolt', 'text-yellow-500');
+                currentQuestionIndex++;
+                setTimeout(loadQuestion, 2000);
+            } else {
+                playError();
+                showToast('Cuba lagi! Anda pasti boleh.');
+            }
+        }
+
+        // --- Logik Khas Susun Huruf / Nombor / Perkataan ---
+        function renderArrangeBoard(availableLetters) {
+            const slotsDiv = document.getElementById('arrange-slots');
+            const lettersDiv = document.getElementById('arrange-letters');
+            
+            slotsDiv.innerHTML = '';
+            lettersDiv.innerHTML = '';
+
+            // Lukis Kotak Kosong
+            currentArrangeState.forEach((val, idx) => {
+                const slot = document.createElement('div');
+                let slotSizeClass = val.length > 5 ? 'text-2xl md:text-3xl px-4' : (val.length > 1 ? 'text-4xl md:text-5xl px-2' : 'text-5xl md:text-7xl');
+                let widthClass = val.length > 2 ? 'w-auto min-w-[5rem] md:min-w-[6rem]' : 'w-20 md:w-24';
+                
+                slot.className = `${widthClass} h-24 md:h-32 border-8 ${val ? 'border-green-400 bg-green-50 text-green-700' : 'border-dashed border-gray-300 bg-gray-50'} rounded-2xl flex items-center justify-center font-kids font-bold ${slotSizeClass} cursor-pointer`;
+                slot.textContent = val;
+                if(val) {
+                    slot.onclick = () => removeLetterFromSlot(idx, availableLetters);
+                }
+                slotsDiv.appendChild(slot);
+            });
+
+            // Lukis Huruf/Perkataan untuk Dipilih
+            availableLetters.forEach((letter, idx) => {
+                if(letter !== null) {
+                    const btn = document.createElement('button');
+                    let btnSizeClass = letter.length > 5 ? 'text-2xl md:text-3xl px-4' : (letter.length > 1 ? 'text-4xl md:text-5xl px-2' : 'text-5xl md:text-7xl');
+                    let widthClass = letter.length > 2 ? 'w-auto min-w-[5rem] md:min-w-[6rem]' : 'w-20 md:w-24';
+                    
+                    btn.className = `btn-3d ${widthClass} h-24 md:h-32 bg-yellow-300 border-8 border-yellow-500 rounded-2xl flex items-center justify-center font-kids font-bold ${btnSizeClass} text-yellow-800 shadow-[0_6px_0_#ca8a04] active:shadow-none active:translate-y-2`;
+                    btn.textContent = letter;
+                    btn.onclick = () => putLetterInSlot(letter, idx, availableLetters);
+                    lettersDiv.appendChild(btn);
+                } else {
+                    const ph = document.createElement('div');
+                    ph.className = `w-20 md:w-24`;
+                    lettersDiv.appendChild(ph);
+                }
+            });
+
+            checkArrangeWin();
+        }
+
+        function putLetterInSlot(letter, sourceIdx, availableLetters) {
+            playClick();
+            const emptyIdx = currentArrangeState.findIndex(val => val === "");
+            if(emptyIdx !== -1) {
+                currentArrangeState[emptyIdx] = letter;
+                availableLetters[sourceIdx] = null;
+                renderArrangeBoard(availableLetters);
+            }
+        }
+
+        function removeLetterFromSlot(slotIdx, availableLetters) {
+            playClick();
+            const letter = currentArrangeState[slotIdx];
+            currentArrangeState[slotIdx] = "";
+            const emptySourceIdx = availableLetters.findIndex(val => val === null);
+            if(emptySourceIdx !== -1) availableLetters[emptySourceIdx] = letter;
+            renderArrangeBoard(availableLetters);
+        }
+
+        function checkArrangeWin() {
+            const currentWord = currentArrangeState.join("");
+            if(currentWord === currentArrangeTarget) {
+                launchReward('Hebat!', 'fa-bolt', 'text-yellow-500');
+                currentQuestionIndex++;
+                setTimeout(loadQuestion, 2000);
+            } else if (currentArrangeState.every(val => val !== "")) {
+                playError();
+                showToast('Hampir tepat! Cuba susun semula mengikut urutan yang betul.');
+            }
+        }
+
+    </script>
+</body>
+</html>
